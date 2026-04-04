@@ -16,9 +16,9 @@
 
 Upload a lecture PDF and get back, in seconds:
 
-- ✅ A **5-point exam-focused summary** — highlights what's actually likely to be tested
-- ✅ **5 Q&A flashcards** — built for active recall, not passive reading
-- ✅ An auto-generated **topic label** — so you can stay organised across multiple files
+- ✅ A **5-point exam-focused summary** - highlights what's actually likely to be tested
+- ✅ **5 Q&A flashcards** - built for active recall, not passive reading
+- ✅ An auto-generated **topic label** - so you can stay organised across multiple files
 
 PDF text is extracted **entirely in your browser** using Mozilla PDF.js. Your files are never uploaded to any server.
 
