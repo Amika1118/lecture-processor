@@ -30,7 +30,7 @@ PDF text is extracted **entirely in your browser** using Mozilla PDF.js. Your fi
 |---|---|---|
 | **Cost** | Free (no card needed) | Subscription or pay-per-token |
 | **Privacy** | PDF stays in your browser | Uploaded to external servers |
-| **Speed** | ~1–2 sec per PDF | Slower, varies |
+| **Speed** | ~1-2 sec per PDF | Slower, varies |
 | **Daily limit** | 14,400 requests (Groq free tier) | Low free limits |
 | **Exam focus** | Prompt-engineered for it | Requires manual prompting |
 
@@ -76,7 +76,7 @@ No credit card required.
 
 ```
 lecture-processor/
-├── index.html       # Main UI — modal, drag zone, result cards
+├── index.html       # Main UI - modal, drag zone, result cards
 ├── css/
 │   └── styles.css   # Dark theme, responsive layout, modal styles
 └── js/
@@ -122,15 +122,15 @@ Your site will be live at `https://Amika1118.github.io/lecture-processor/` withi
 
 ## 🙏 Credits
 
-- [Groq](https://groq.com) — blazing-fast free inference via Llama 3.3 70B
-- [Mozilla PDF.js](https://mozilla.github.io/pdf.js/) — client-side PDF text extraction
-- [IBM Plex Mono](https://fonts.google.com/specimen/IBM+Plex+Mono) — clean monospace UI font
+- [Groq](https://groq.com) - blazing-fast free inference via Llama 3.3 70B
+- [Mozilla PDF.js](https://mozilla.github.io/pdf.js/) - client-side PDF text extraction
+- [IBM Plex Mono](https://fonts.google.com/specimen/IBM+Plex+Mono) - clean monospace UI font
 
 ---
 
 ## 📄 License
 
-MIT — free for personal and educational use.
+MIT - free for personal and educational use.
 
 ---
 
