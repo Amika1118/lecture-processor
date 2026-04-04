@@ -104,8 +104,6 @@ Then open `http://localhost:8000` in your browser.
 3. Set branch to `main`, folder to `/ (root)`
 4. Click **Save**
 
-Your site will be live at `https://Amika1118.github.io/lecture-processor/` within 1–2 minutes.
-
 ---
 
 ## ❓ Troubleshooting
