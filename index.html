@@ -1,115 +1,231 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Free Lecture Processor · Groq AI</title>
+  <title>Lecture Notes Processor · Groq AI</title>
+  <meta name="description" content="Turn lecture PDFs into exam-focused summaries and flashcards — 100% free, powered by Groq AI.">
   <link rel="stylesheet" href="css/styles.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
 </head>
 <body>
-<div class="container">
 
-  <header>
-    <div class="logo">Uni Companion · 100% FREE</div>
-    <h1>Lecture Notes Processor</h1>
-    <p class="subtitle">PDF → exam-focused summaries + flashcards · Powered by Groq (Llama 3.3 70B)</p>
-  </header>
+  <a href="#main" class="skip-link">Skip to main content</a>
 
-  <!-- API key input with helper link -->
-  <div class="api-key-wrap">
-    <span class="api-label">⚡ GROQ API KEY</span>
-    <input class="api-input" type="password" id="groq-key" placeholder="gsk_... get from console.groq.com" autocomplete="off">
-    <button class="helper-btn" id="need-key-btn" type="button">❓ Need a key?</button>
-  </div>
-  <p class="api-note" style="margin-top:-1rem; margin-bottom:1.5rem; padding-left:2px;">
-    🔓 <strong>Completely free</strong> – sign up at <a href="https://console.groq.com" target="_blank">console.groq.com</a>, copy your API key. <br>
-    Limit: 14,400 requests/day – more than enough for all your lectures.
-  </p>
+  <button
+    class="theme-toggle"
+    id="theme-toggle"
+    aria-label="Switch to light mode"
+    title="Toggle light / dark mode"
+  >☀️</button>
 
-  <!-- Advanced settings panel (collapsible) -->
-  <div class="config-panel">
-    <div class="config-header" onclick="toggleConfig()">
-      <span>⚙️ SAFEGUARDS · PROTECT YOUR FREE QUOTA</span>
-      <span id="config-chevron">▼</span>
-    </div>
-    <div class="config-body" id="config-body">
-      <div class="config-row">
-        <span class="config-label">Max files per batch</span>
-        <input class="config-field" id="max-files-limit" value="10" type="number" min="1" max="50">
+  <div class="container">
+
+    <!-- ── Header ────────────────────────────────────────── -->
+    <header>
+      <div class="logo">Uni Companion · 100% Free</div>
+      <h1>Lecture Notes Processor</h1>
+      <p class="subtitle">PDF → exam-focused summaries + flashcards · Powered by Groq (Llama 3.3 70B)</p>
+    </header>
+
+    <main id="main">
+
+      <!-- ── API Key ──────────────────────────────────────── -->
+      <section class="section-block" aria-labelledby="api-label">
+        <div class="api-key-wrap">
+          <label class="api-label" id="api-label" for="groq-key">⚡ Groq API Key</label>
+          <div class="api-input-row">
+            <input
+              class="api-input"
+              type="password"
+              id="groq-key"
+              placeholder="gsk_… paste your key here"
+              autocomplete="off"
+              spellcheck="false"
+              aria-describedby="api-hint"
+            >
+            <button
+              class="show-key-btn"
+              id="show-key-btn"
+              type="button"
+              aria-label="Show API key"
+              aria-pressed="false"
+            >👁</button>
+          </div>
+          <button
+            class="helper-btn"
+            id="need-key-btn"
+            type="button"
+            aria-haspopup="dialog"
+          >❓ Need a key?</button>
+        </div>
+        <p class="api-note" id="api-hint">
+          🔓 <strong>Completely free</strong> - sign up at
+          <a href="https://console.groq.com" target="_blank" rel="noopener noreferrer">console.groq.com</a>,
+          copy your API key. Limit: 14,400 requests/day.
+        </p>
+      </section>
+
+      <!-- ── Safeguards ───────────────────────────────────── -->
+      <section class="config-panel section-block">
+        <button
+          class="config-header"
+          id="config-toggle-btn"
+          type="button"
+          onclick="toggleConfig()"
+          aria-expanded="false"
+          aria-controls="config-body"
+        >
+          <span>⚙ Safeguards · Protect your free quota</span>
+          <span class="config-chevron" id="config-chevron" aria-hidden="true">▼</span>
+        </button>
+        <div class="config-body" id="config-body" hidden>
+          <div class="config-row">
+            <label class="config-label" for="max-files-limit">Max files per batch</label>
+            <input class="config-field" id="max-files-limit" type="number" value="10" min="1" max="50">
+          </div>
+          <div class="config-row">
+            <label class="config-label" for="api-delay">Delay between calls (ms)</label>
+            <input class="config-field" id="api-delay" type="number" value="1500" min="500">
+          </div>
+          <div class="config-row">
+            <label class="config-label" for="daily-limit">Daily request limit</label>
+            <input class="config-field" id="daily-limit" type="number" value="500" min="50" max="14400">
+          </div>
+          <p class="config-note">
+            Groq free tier: 14,400 requests/day · ~30 req/min.
+            Auto-retry with exponential backoff on rate limits. Daily counter saved in your browser.
+          </p>
+        </div>
+      </section>
+
+      <!-- ── Drop Zone ────────────────────────────────────── -->
+      <section class="section-block" aria-label="Upload PDFs">
+        <div
+          id="drop-zone"
+          role="button"
+          tabindex="0"
+          aria-label="Drop lecture PDFs here or press Enter to browse files"
+          onclick="document.getElementById('file-input').click()"
+          onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();document.getElementById('file-input').click();}"
+        >
+          <input type="file" id="file-input" accept=".pdf" multiple aria-label="Select PDF files">
+          <span class="drop-icon" aria-hidden="true">📚</span>
+          <p class="drop-title">Drop lecture PDFs here</p>
+          <p class="drop-sub">Text extracted locally in your browser — then sent to Groq AI (free)</p>
+          <p class="drop-warning">⚠ Max 25 MB per file · Text-based PDFs only (not scanned images)</p>
+        </div>
+      </section>
+
+      <!-- ── File List ────────────────────────────────────── -->
+      <div
+        id="file-list"
+        class="file-list"
+        role="list"
+        aria-label="Uploaded files"
+        aria-live="polite"
+      ></div>
+
+      <!-- ── Stats ────────────────────────────────────────── -->
+      <div id="stats-section" style="display:none;" aria-live="polite">
+        <div class="stats-row" role="group" aria-label="Processing statistics">
+          <div class="stat">
+            <div class="stat-num" id="stat-total" aria-label="Files queued">0</div>
+            <div class="stat-lbl">Queued</div>
+          </div>
+          <div class="stat">
+            <div class="stat-num" id="stat-done" aria-label="Files processed">0</div>
+            <div class="stat-lbl">Processed</div>
+          </div>
+          <div class="stat">
+            <div class="stat-num" id="stat-cards" aria-label="Flashcards generated">0</div>
+            <div class="stat-lbl">Flashcards</div>
+          </div>
+        </div>
+        <div
+          class="progress-wrap"
+          role="progressbar"
+          aria-valuemin="0"
+          aria-valuemax="100"
+          aria-valuenow="0"
+          aria-label="Processing progress"
+          id="progress-bar"
+        >
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
+        <div
+          id="limit-warning"
+          class="limit-warning"
+          role="alert"
+          aria-live="assertive"
+        ></div>
       </div>
-      <div class="config-row">
-        <span class="config-label">Delay between calls (ms)</span>
-        <input class="config-field" id="api-delay" value="1500" type="number" min="500">
+
+      <!-- ── Actions ──────────────────────────────────────── -->
+      <div id="action-section" style="display:none;">
+        <div class="action-bar">
+          <button id="process-btn" type="button" onclick="startProcessing()">
+            ▶ Process all PDFs (FREE)
+          </button>
+          <button id="stop-btn" type="button" onclick="stopProcessing()">
+            ⏹ Stop
+          </button>
+        </div>
       </div>
-      <div class="config-row">
-        <span class="config-label">Daily request limit (est.)</span>
-        <input class="config-field" id="daily-limit" value="500" type="number" min="50" max="14400">
+
+      <!-- ── Results ──────────────────────────────────────── -->
+      <section
+        id="results"
+        class="results"
+        aria-label="Results"
+        aria-live="polite"
+        aria-relevant="additions"
+      ></section>
+
+    </main>
+
+    <!-- ── Footer ─────────────────────────────────────────── -->
+    <footer class="site-footer">
+      Powered by <a href="https://groq.com" target="_blank" rel="noopener noreferrer">Groq</a>
+      · PDF extraction by <a href="https://mozilla.github.io/pdf.js/" target="_blank" rel="noopener noreferrer">PDF.js</a>
+      · <a href="https://github.com/Amika1118/lecture-processor" target="_blank" rel="noopener noreferrer">View on GitHub</a>
+    </footer>
+
+  </div><!-- /container -->
+
+  <!-- ── Modal ────────────────────────────────────────────── -->
+  <div
+    id="key-instruction-modal"
+    class="modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="modal-title"
+    tabindex="-1"
+  >
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modal-title">🔑 Get your free Groq API Key</h2>
+        <button class="modal-close" type="button" aria-label="Close">&times;</button>
       </div>
-      <div class="config-note">
-        ⚡ Groq free tier: 14,400 requests/day, ~30 requests per minute. <br>
-        We add delays, exponential backoff on rate limits, and a daily counter (saved in your browser).
+      <div class="modal-body">
+        <p>No credit card required — takes about 60 seconds:</p>
+        <ol>
+          <li>Go to <a href="https://console.groq.com" target="_blank" rel="noopener noreferrer">console.groq.com</a></li>
+          <li>Sign up with Google, GitHub, or email</li>
+          <li>Click <strong>API Keys</strong> in the sidebar</li>
+          <li>Click <strong>Create API Key</strong>, give it a name</li>
+          <li>Copy the key — it starts with <code>gsk_</code></li>
+          <li>Paste it into the API key field and you're done</li>
+        </ol>
+        <p class="modal-success">✅ Up to 14,400 free requests per day — more than enough.</p>
+        <button id="modal-ok-btn" class="modal-btn" type="button">Got it, I have my key</button>
       </div>
     </div>
   </div>
 
-  <!-- Drop zone for PDF files -->
-  <div id="drop-zone" onclick="document.getElementById('file-input').click()">
-    <input type="file" id="file-input" accept=".pdf" multiple>
-    <span class="drop-icon">📚</span>
-    <p class="drop-title">Drop lecture PDFs here</p>
-    <p class="drop-sub">PDF text extracted locally – then sent to Groq AI (free)</p>
-    <p class="drop-sub" style="color: var(--text3); margin-top: 8px;">⚠️ Max file size: 25MB · Works best with text-based PDFs (not scanned images)</p>
-  </div>
+  <!-- Scripts -->
+  <script src="js/script.js"></script>
+  <script src="js/ui.js"></script>
 
-  <!-- File list -->
-  <div class="file-list" id="file-list"></div>
-
-  <!-- Statistics and progress -->
-  <div id="stats-section" style="display:none;">
-    <div class="stats-row">
-      <div class="stat"><div class="stat-num" id="stat-total">0</div><div class="stat-lbl">Queued</div></div>
-      <div class="stat"><div class="stat-num" id="stat-done">0</div><div class="stat-lbl">Processed</div></div>
-      <div class="stat"><div class="stat-num" id="stat-cards">0</div><div class="stat-lbl">Flashcards</div></div>
-    </div>
-    <div class="progress-wrap"><div class="progress-fill" id="progress-fill"></div></div>
-    <div id="limit-warning" class="limit-warning"></div>
-  </div>
-
-  <!-- Action buttons -->
-  <div id="action-section" style="display:none;">
-    <div class="action-bar">
-      <button id="process-btn" onclick="startProcessing()">▶ Process all PDFs (FREE)</button>
-      <button id="stop-btn" onclick="stopProcessing()">⏹️ Stop</button>
-    </div>
-  </div>
-
-  <!-- Results container -->
-  <div class="results" id="results"></div>
-</div>
-
-<!-- Modal overlay for API key instructions -->
-<div id="key-instruction-modal" class="modal">
-  <div class="modal-content">
-    <span class="modal-close">&times;</span>
-    <h3>🔑 Get your FREE Groq API Key</h3>
-    <div class="modal-body">
-      <p>Follow these steps (no credit card required):</p>
-      <ol>
-        <li>Go to <a href="https://console.groq.com" target="_blank">console.groq.com</a></li>
-        <li>Sign up using Google, GitHub, or email</li>
-        <li>Once logged in, click on <strong>API Keys</strong> in the left sidebar</li>
-        <li>Click <strong>Create API Key</strong></li>
-        <li>Give it a name (e.g., "Lecture Processor") and click <strong>Create</strong></li>
-        <li>Copy the key (it starts with <code>gsk_</code>)</li>
-        <li>Paste it into the API key field on this page</li>
-      </ol>
-      <p><strong>✅ That's it! You can now process up to 14,400 lectures per day for free.</strong></p>
-      <button id="modal-ok-btn" class="modal-btn">Got it, I have my key</button>
-    </div>
-  </div>
-</div>
-
-<script src="js/script.js"></script>
 </body>
 </html>
