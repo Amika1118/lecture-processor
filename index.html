@@ -1,23 +1,22 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lecture Notes Processor · Groq AI</title>
-  <meta name="description" content="Turn lecture PDFs into exam-focused summaries and flashcards — 100% free, powered by Groq AI.">
+  <meta name="description"
+    content="Turn lecture PDFs into exam-focused summaries and flashcards — 100% free, powered by Groq AI.">
   <link rel="stylesheet" href="css/styles.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
 </head>
+
 <body>
 
   <a href="#main" class="skip-link">Skip to main content</a>
 
-  <button
-    class="theme-toggle"
-    id="theme-toggle"
-    aria-label="Switch to light mode"
-    title="Toggle light / dark mode"
-  >☀️</button>
+  <button class="theme-toggle" id="theme-toggle" aria-label="Switch to light mode"
+    title="Toggle light / dark mode">☀️</button>
 
   <div class="container">
 
@@ -35,29 +34,12 @@
         <div class="api-key-wrap">
           <label class="api-label" id="api-label" for="groq-key">⚡ Groq API Key</label>
           <div class="api-input-row">
-            <input
-              class="api-input"
-              type="password"
-              id="groq-key"
-              placeholder="gsk_… paste your key here"
-              autocomplete="off"
-              spellcheck="false"
-              aria-describedby="api-hint"
-            >
-            <button
-              class="show-key-btn"
-              id="show-key-btn"
-              type="button"
-              aria-label="Show API key"
-              aria-pressed="false"
-            >👁</button>
+            <input class="api-input" type="password" id="groq-key" placeholder="gsk_… paste your key here"
+              autocomplete="off" spellcheck="false" aria-describedby="api-hint">
+            <button class="show-key-btn" id="show-key-btn" type="button" aria-label="Show API key"
+              aria-pressed="false">👁</button>
           </div>
-          <button
-            class="helper-btn"
-            id="need-key-btn"
-            type="button"
-            aria-haspopup="dialog"
-          >❓ Need a key?</button>
+          <button class="helper-btn" id="need-key-btn" type="button" aria-haspopup="dialog">❓ Need a key?</button>
         </div>
         <p class="api-note" id="api-hint">
           🔓 <strong>Completely free</strong> - sign up at
@@ -68,14 +50,8 @@
 
       <!-- ── Safeguards ───────────────────────────────────── -->
       <section class="config-panel section-block">
-        <button
-          class="config-header"
-          id="config-toggle-btn"
-          type="button"
-          onclick="toggleConfig()"
-          aria-expanded="false"
-          aria-controls="config-body"
-        >
+        <button class="config-header" id="config-toggle-btn" type="button" onclick="toggleConfig()"
+          aria-expanded="false" aria-controls="config-body">
           <span>⚙ Safeguards · Protect your free quota</span>
           <span class="config-chevron" id="config-chevron" aria-hidden="true">▼</span>
         </button>
@@ -101,14 +77,10 @@
 
       <!-- ── Drop Zone ────────────────────────────────────── -->
       <section class="section-block" aria-label="Upload PDFs">
-        <div
-          id="drop-zone"
-          role="button"
-          tabindex="0"
+        <div id="drop-zone" role="button" tabindex="0"
           aria-label="Drop lecture PDFs here or press Enter to browse files"
           onclick="document.getElementById('file-input').click()"
-          onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();document.getElementById('file-input').click();}"
-        >
+          onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();document.getElementById('file-input').click();}">
           <input type="file" id="file-input" accept=".pdf" multiple aria-label="Select PDF files">
           <span class="drop-icon" aria-hidden="true">📚</span>
           <p class="drop-title">Drop lecture PDFs here</p>
@@ -118,13 +90,7 @@
       </section>
 
       <!-- ── File List ────────────────────────────────────── -->
-      <div
-        id="file-list"
-        class="file-list"
-        role="list"
-        aria-label="Uploaded files"
-        aria-live="polite"
-      ></div>
+      <div id="file-list" class="file-list" role="list" aria-label="Uploaded files" aria-live="polite"></div>
 
       <!-- ── Stats ────────────────────────────────────────── -->
       <div id="stats-section" style="display:none;" aria-live="polite">
@@ -142,23 +108,11 @@
             <div class="stat-lbl">Flashcards</div>
           </div>
         </div>
-        <div
-          class="progress-wrap"
-          role="progressbar"
-          aria-valuemin="0"
-          aria-valuemax="100"
-          aria-valuenow="0"
-          aria-label="Processing progress"
-          id="progress-bar"
-        >
+        <div class="progress-wrap" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"
+          aria-label="Processing progress" id="progress-bar">
           <div class="progress-fill" id="progress-fill"></div>
         </div>
-        <div
-          id="limit-warning"
-          class="limit-warning"
-          role="alert"
-          aria-live="assertive"
-        ></div>
+        <div id="limit-warning" class="limit-warning" role="alert" aria-live="assertive"></div>
       </div>
 
       <!-- ── Actions ──────────────────────────────────────── -->
@@ -174,34 +128,67 @@
       </div>
 
       <!-- ── Results ──────────────────────────────────────── -->
-      <section
-        id="results"
-        class="results"
-        aria-label="Results"
-        aria-live="polite"
-        aria-relevant="additions"
-      ></section>
+      <section id="results" class="results" aria-label="Results" aria-live="polite" aria-relevant="additions"></section>
 
     </main>
 
     <!-- ── Footer ─────────────────────────────────────────── -->
     <footer class="site-footer">
-      Powered by <a href="https://groq.com" target="_blank" rel="noopener noreferrer">Groq</a>
-      · PDF extraction by <a href="https://mozilla.github.io/pdf.js/" target="_blank" rel="noopener noreferrer">PDF.js</a>
-      · <a href="https://github.com/Amika1118/lecture-processor" target="_blank" rel="noopener noreferrer">View on GitHub</a>
+      <p>
+        Powered by <a href="https://groq.com" target="_blank" rel="noopener noreferrer">Groq</a>
+        · PDF extraction by <a href="https://mozilla.github.io/pdf.js/" target="_blank"
+          rel="noopener noreferrer">PDF.js</a>
+        · <a href="https://github.com/Amika1118/lecture-processor" target="_blank" rel="noopener noreferrer">View on
+          GitHub</a>
+      </p>
+
+      <div class="footer-credit">
+        <p class="footer-made">
+          Made with <span class="footer-heart" aria-hidden="true">♥</span> by
+          <a href="https://github.com/Amika1118" target="_blank" rel="noopener noreferrer" class="footer-name">Amika
+            Alankara</a>
+        </p>
+
+        <nav class="footer-links" aria-label="Social links">
+          <a href="https://github.com/Amika1118" target="_blank" rel="noopener noreferrer" class="footer-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" aria-hidden="true">
+              <path
+                d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22">
+              </path>
+            </svg>
+            GitHub
+          </a>
+          <a href="#" target="_blank" rel="noopener noreferrer" class="footer-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" aria-hidden="true">
+              <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+              <rect x="2" y="9" width="4" height="12"></rect>
+              <circle cx="4" cy="4" r="2"></circle>
+            </svg>
+            LinkedIn
+          </a>
+          <a href="#" target="_blank" rel="noopener noreferrer" class="footer-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="2" y1="12" x2="22" y2="12"></line>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z">
+              </path>
+            </svg>
+            Portfolio
+          </a>
+        </nav>
+
+        <p class="footer-stack">Lecture Notes Processor · Open source · PDF.js · Groq API</p>
+      </div>
     </footer>
 
   </div><!-- /container -->
 
   <!-- ── Modal ────────────────────────────────────────────── -->
-  <div
-    id="key-instruction-modal"
-    class="modal"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="modal-title"
-    tabindex="-1"
-  >
+  <div id="key-instruction-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title"
+    tabindex="-1">
     <div class="modal-content">
       <div class="modal-header">
         <h2 id="modal-title">🔑 Get your free Groq API Key</h2>
@@ -210,7 +197,8 @@
       <div class="modal-body">
         <p>No credit card required — takes about 60 seconds:</p>
         <ol>
-          <li>Go to <a href="https://console.groq.com" target="_blank" rel="noopener noreferrer">console.groq.com</a></li>
+          <li>Go to <a href="https://console.groq.com" target="_blank" rel="noopener noreferrer">console.groq.com</a>
+          </li>
           <li>Sign up with Google, GitHub, or email</li>
           <li>Click <strong>API Keys</strong> in the sidebar</li>
           <li>Click <strong>Create API Key</strong>, give it a name</li>
@@ -228,4 +216,5 @@
   <script src="js/ui.js"></script>
 
 </body>
+
 </html>
